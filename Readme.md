@@ -34,7 +34,7 @@ Igra je hitra in dinamična, zahteva pa tudi nekaj znanja.
 - Pomik figur glede na vrednost meta (vrednost meta lahko razdelimo -> 8 | 5 + 3)
 - Figure na polju lahko premikamo, če na pregradi nimamo figur
 - Če figur s pregrade ne moremo premakniti, moramo predati potezo
-- Figura se s pregrade nadaljuje pot na 24. polju
+- Figura s pregrade nadaljuje pot na 24. polju
 - Če je na polju 1 (nasprotnikova) figura, jo lahko zbijemo (figura se prestavi na pregrado)
 - Če sta na polju vsaj 2 (nasprotnikovi) figuri, se na to polje ne moremo premakniti
 - Če igralec zavrne podvojitev nasprotniku prišteje 1 točko
