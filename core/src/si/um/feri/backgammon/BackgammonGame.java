@@ -1,31 +1,55 @@
 package si.um.feri.backgammon;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class BackgammonGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+import si.um.feri.backgammon.screen.IntroScreen;
+
+public class BackgammonGame extends Game {
+	private AssetManager assetManager;
+	private SpriteBatch batch;
 	
 	@Override
 	public void create () {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+
+		assetManager = new AssetManager();
+		assetManager.getLogger().setLevel(Logger.DEBUG);
+
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+
+		setScreen(new IntroScreen(this));
 	}
 
 	@Override
-	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+	public Screen getScreen() {
+		return super.getScreen();
 	}
-	
+
+	@Override
+	public void setScreen(Screen screen) {
+		super.setScreen(screen);
+	}
+
 	@Override
 	public void dispose () {
+		assetManager.dispose();
 		batch.dispose();
-		img.dispose();
+	}
+
+	public AssetManager getAssetManager() {
+		return assetManager;
+	}
+
+	public SpriteBatch getBatch() {
+		return batch;
 	}
 }

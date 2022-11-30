@@ -1,0 +1,111 @@
+
+gameplay.png
+size: 4096, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+backboard
+  rotate: false
+  xy: 1, 229
+  size: 2080, 1536
+  orig: 2080, 1536
+  offset: 0, 0
+  index: -1
+bar
+  rotate: false
+  xy: 2357, 229
+  size: 256, 1536
+  orig: 256, 1536
+  offset: 0, 0
+  index: -1
+dice-val-1
+  rotate: false
+  xy: 2615, 385
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+dice-val-2
+  rotate: false
+  xy: 1, 1
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+dice-val-3
+  rotate: false
+  xy: 131, 131
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+dice-val-4
+  rotate: false
+  xy: 2745, 1539
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+dice-val-5
+  rotate: false
+  xy: 2875, 1669
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+dice-val-6
+  rotate: false
+  xy: 2615, 287
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+figure-bright
+  rotate: false
+  xy: 1, 99
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+figure-bright-side
+  rotate: false
+  xy: 229, 191
+  size: 128, 36
+  orig: 128, 36
+  offset: 0, 0
+  index: -1
+figure-dark
+  rotate: false
+  xy: 2745, 1637
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+figure-dark-side
+  rotate: false
+  xy: 2973, 1729
+  size: 128, 36
+  orig: 128, 36
+  offset: 0, 0
+  index: -1
+spike-bright
+  rotate: false
+  xy: 2615, 1125
+  size: 128, 640
+  orig: 128, 640
+  offset: 0, 0
+  index: -1
+spike-dark
+  rotate: false
+  xy: 2615, 483
+  size: 128, 640
+  orig: 128, 640
+  offset: 0, 0
+  index: -1
+storage
+  rotate: false
+  xy: 2083, 229
+  size: 272, 1536
+  orig: 272, 1536
+  offset: 0, 0
+  index: -1
