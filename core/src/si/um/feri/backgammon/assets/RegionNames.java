@@ -3,7 +3,9 @@ package si.um.feri.backgammon.assets;
 public class RegionNames {
 
     // gameplay.atlas
-    public static final String BACKBOARD = "backboard";
+    public static final String MENU_BACKGROUND = "menu-background";
+    public static final String BACKGROUND = "background";
+    public static final String BRANDING = "branding";
     public static final String BAR = "bar";
     public static final String SPIKE_BRIGHT = "spike-bright";
     public static final String SPIKE_DARK = "spike-dark";

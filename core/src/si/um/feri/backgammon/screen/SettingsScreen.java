@@ -8,12 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -23,7 +24,7 @@ import si.um.feri.backgammon.assets.AssetDescriptors;
 import si.um.feri.backgammon.assets.RegionNames;
 import si.um.feri.backgammon.config.GameConfig;
 
-public class MenuScreen extends ScreenAdapter {
+public class SettingsScreen extends ScreenAdapter {
     private final BackgammonGame game;
     private final AssetManager assetManager;
 
@@ -33,7 +34,7 @@ public class MenuScreen extends ScreenAdapter {
     private Skin skin;
     private TextureAtlas gameplayAtlas;
 
-    public MenuScreen(BackgammonGame game) {
+    public SettingsScreen(BackgammonGame game) {
         this.game = game;
         assetManager = game.getAssetManager();
     }
@@ -41,23 +42,23 @@ public class MenuScreen extends ScreenAdapter {
     @Override
     public void show() {
         viewport = new FitViewport(GameConfig.INTRO_WIDTH, GameConfig.INTRO_HEIGHT);
-        stage = new Stage(viewport,game.getBatch());
+        stage = new Stage(viewport, game.getBatch());
 
         skin = assetManager.get(AssetDescriptors.UI_SKIN);
         gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY);
 
-        stage.addActor(createMenu());
+        stage.addActor(createSettings());
         Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width,height,true);
+        viewport.update(width, height, true);
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0.4f,0.8f,0.8f,0);
+        ScreenUtils.clear(0.4f, 0.8f, 0.8f, 0);
 
         stage.act(delta);
         stage.draw();
@@ -73,61 +74,44 @@ public class MenuScreen extends ScreenAdapter {
         stage.dispose();
     }
 
-    private Actor createMenu() {
+    private Actor createSettings() {
         Table table = new Table();
         table.defaults().pad(20);
 
         TextureRegion backgroundRegion = gameplayAtlas.findRegion(RegionNames.BACKGROUND);
         table.setBackground(new TextureRegionDrawable(backgroundRegion));
 
-        // Initializing inner table items
-        TextButton playButton = new TextButton("Play", skin);
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game));
-            }
-        });
-
-        TextButton leaderboardButton = new TextButton("Leaderboard", skin);
-        leaderboardButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LeaderboardScreen(game));
-            }
-        });
-
-        TextButton settingsButton = new TextButton("Settings", skin);
-        settingsButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingsScreen(game));
-            }
-        });
-
-        TextButton quitButton = new TextButton("Quit", skin);
-        quitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-
-        // Content table
+        // Inner table
         Table contentTable = new Table();
         contentTable.defaults().padLeft(20).padRight(20);
 
         TextureRegion menuBackgroundRegion = gameplayAtlas.findRegion(RegionNames.MENU_BACKGROUND);
         contentTable.setBackground(new TextureRegionDrawable(menuBackgroundRegion));
 
-        contentTable.add(playButton).padBottom(10).expandX().fill().row();
-        contentTable.add(leaderboardButton).padBottom(10).fillX().row();
-        contentTable.add(settingsButton).padBottom(10).fillX().row();
-        contentTable.add(quitButton).fillX();
+        // Apply items to inner table
+        contentTable.add(new Label("Settings", skin))
+                .padBottom(40)
+                .align(Align.top)
+                .colspan(2)
+                .row();
+
+        // back btn
+        TextButton leaderboardButton = new TextButton("Back", skin);
+        leaderboardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        contentTable.add(leaderboardButton)
+                .padTop(20)
+                .padBottom(20)
+                .colspan(2)
+                .row();
+
+        // Apply inner table to global table
         contentTable.center();
 
-
-        // Fill parent table
         table.add(contentTable);
         table.center();
         table.setFillParent(true);

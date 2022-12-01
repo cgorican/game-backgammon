@@ -4,107 +4,121 @@ size: 4096, 2048
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-backboard
+background
   rotate: false
-  xy: 1, 229
+  xy: 2, 269
   size: 2080, 1536
   orig: 2080, 1536
   offset: 0, 0
   index: -1
 bar
   rotate: false
-  xy: 2357, 229
+  xy: 2358, 269
   size: 256, 1536
   orig: 256, 1536
   offset: 0, 0
   index: -1
+branding
+  rotate: false
+  xy: 2, 100
+  size: 499, 167
+  orig: 499, 167
+  offset: 0, 0
+  index: -1
 dice-val-1
   rotate: false
-  xy: 2615, 385
+  xy: 3248, 1709
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 dice-val-2
   rotate: false
-  xy: 1, 1
+  xy: 2, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 dice-val-3
   rotate: false
-  xy: 131, 131
+  xy: 503, 171
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 dice-val-4
   rotate: false
-  xy: 2745, 1539
+  xy: 2746, 777
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 dice-val-5
   rotate: false
-  xy: 2875, 1669
+  xy: 2876, 907
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 dice-val-6
   rotate: false
-  xy: 2615, 287
+  xy: 3248, 1611
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 figure-bright
   rotate: false
-  xy: 1, 99
+  xy: 2746, 875
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 figure-bright-side
   rotate: false
-  xy: 229, 191
+  xy: 2616, 325
   size: 128, 36
   orig: 128, 36
   offset: 0, 0
   index: -1
 figure-dark
   rotate: false
-  xy: 2745, 1637
+  xy: 3118, 1035
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 figure-dark-side
   rotate: false
-  xy: 2973, 1729
+  xy: 3346, 1769
   size: 128, 36
   orig: 128, 36
   offset: 0, 0
   index: -1
+menu-background
+  rotate: false
+  xy: 2616, 1005
+  size: 500, 800
+  orig: 500, 800
+  offset: 0, 0
+  index: -1
 spike-bright
   rotate: false
-  xy: 2615, 1125
+  xy: 2616, 363
   size: 128, 640
   orig: 128, 640
   offset: 0, 0
   index: -1
 spike-dark
   rotate: false
-  xy: 2615, 483
+  xy: 3118, 1165
   size: 128, 640
   orig: 128, 640
   offset: 0, 0
   index: -1
 storage
   rotate: false
-  xy: 2083, 229
+  xy: 2084, 269
   size: 272, 1536
   orig: 272, 1536
   offset: 0, 0

@@ -12,10 +12,9 @@ public class AssetPacker {
     public static void main(String[] args) {
         TexturePacker.Settings settings = new TexturePacker.Settings();
         settings.debug = DRAW_DEBUG_OUTLINE;
-        settings.maxHeight = 4096;
-        settings.maxWidth = 4096;
+        settings.maxHeight = 4*1024;
+        settings.maxWidth = 4*1024;
         settings.edgePadding = true;
-        settings.duplicatePadding = true;
 
         TexturePacker.process(settings,
                 RAW_ASSETS_PATH + "/gameplay",   // the directory containing individual images to be packed
@@ -23,12 +22,10 @@ public class AssetPacker {
                 "gameplay"   // the name of the pack file / atlas name
         );
 
-        /*
         TexturePacker.process(settings,
                 RAW_ASSETS_PATH + "/skin",
                 ASSETS_PATH + "/ui",
                 "uiskin"
         );
-         */
     }
 }
