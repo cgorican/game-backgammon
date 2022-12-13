@@ -29,6 +29,7 @@ import java.util.Map;
 import si.um.feri.backgammon.BackgammonGame;
 import si.um.feri.backgammon.assets.AssetDescriptors;
 import si.um.feri.backgammon.assets.RegionNames;
+import si.um.feri.backgammon.common.GameManager;
 import si.um.feri.backgammon.config.GameConfig;
 
 public class LeaderboardScreen extends ScreenAdapter {
@@ -48,7 +49,7 @@ public class LeaderboardScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        viewport = new FitViewport(GameConfig.INTRO_WIDTH, GameConfig.INTRO_HEIGHT);
+        viewport = new FitViewport(GameConfig.WIDTH, GameConfig.HEIGHT);
         stage = new Stage(viewport, game.getBatch());
 
         skin = assetManager.get(AssetDescriptors.UI_SKIN);
@@ -105,7 +106,7 @@ public class LeaderboardScreen extends ScreenAdapter {
         contentTable.add(new Label("Wins", skin))
                 .padBottom(5)
                 .row();
-        for (HashMap.Entry<String, Integer> x : game.leaderboard.entrySet()) {
+        for (HashMap.Entry<String, Integer> x : GameManager.INSTANCE.leaderboard.entrySet()) {
             contentTable.add(new Label(x.getKey(), skin));
             Label scoreLabel = new Label(x.getValue() + "", skin);
             contentTable.add(scoreLabel)

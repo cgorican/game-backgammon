@@ -37,7 +37,7 @@ public class IntroScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        viewport = new FitViewport(GameConfig.INTRO_WIDTH, GameConfig.INTRO_HEIGHT);
+        viewport = new FitViewport(GameConfig.WIDTH, GameConfig.HEIGHT);
         stage = new Stage(viewport,game.getBatch());
 
         // load assets
@@ -86,17 +86,17 @@ public class IntroScreen extends ScreenAdapter {
     private Actor createFigureAnimation() {
         Image figure = new Image(gameplayAtlas.findRegion(RegionNames.FIGURE_BRIGHT));
 
-        float posX = viewport.getWorldWidth()/2f - figure.getWidth()/2f;
-        float posY = viewport.getWorldHeight()/2f - figure.getHeight()/2f;
+        float centerX = viewport.getWorldWidth()/2f - figure.getWidth()/2f;
+        float centerY = viewport.getWorldHeight()/2f - figure.getHeight()/2f;
 
         figure.setOrigin(Align.center);
-        figure.setPosition(posX,-figure.getHeight());
+        figure.setPosition(centerX,-figure.getHeight());
         figure.addAction(
                 Actions.sequence(
                         Actions.delay(2.5f),
                         Actions.parallel(
                                 Actions.rotateBy(360,1f),
-                                Actions.moveTo(posX,posY,1f)
+                                Actions.moveTo(centerX,centerY,1f)
                         ),
                         Actions.fadeOut(1.5f),
                         Actions.removeActor()
@@ -108,10 +108,10 @@ public class IntroScreen extends ScreenAdapter {
     private Actor createSpikeWithAnimation(int index, int rowCount) {
         Image spike;
         if(index % 2 == 0) {
-            spike = new Image(gameplayAtlas.findRegion(RegionNames.SPIKE_BRIGHT));
+            spike = new Image(gameplayAtlas.findRegion(RegionNames.SPIKE_INTRO_BRIGHT));
         }
         else {
-            spike = new Image(gameplayAtlas.findRegion(RegionNames.SPIKE_DARK));
+            spike = new Image(gameplayAtlas.findRegion(RegionNames.SPIKE_INTRO_DARK));
         }
 
         float posX = index*spike.getWidth();
@@ -156,7 +156,7 @@ public class IntroScreen extends ScreenAdapter {
     }
 
     private void createSpikeAnimation() {
-        Image spikeRef = new Image(gameplayAtlas.findRegion(RegionNames.SPIKE_DARK));
+        Image spikeRef = new Image(gameplayAtlas.findRegion(RegionNames.SPIKE_INTRO_DARK));
 
         int count = (int)(viewport.getWorldWidth() / spikeRef.getWidth()) + 1;
         if(viewport.getWorldWidth() % spikeRef.getWidth() != 0) {

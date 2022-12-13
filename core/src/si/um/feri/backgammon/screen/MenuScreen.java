@@ -40,7 +40,7 @@ public class MenuScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        viewport = new FitViewport(GameConfig.INTRO_WIDTH, GameConfig.INTRO_HEIGHT);
+        viewport = new FitViewport(GameConfig.WIDTH, GameConfig.HEIGHT);
         stage = new Stage(viewport,game.getBatch());
 
         skin = assetManager.get(AssetDescriptors.UI_SKIN);
@@ -82,6 +82,8 @@ public class MenuScreen extends ScreenAdapter {
 
         // Initializing inner table items
         TextButton playButton = new TextButton("Play", skin);
+        playButton.setTransform(true);
+        playButton.setScale(1f,1.2f);
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -90,6 +92,8 @@ public class MenuScreen extends ScreenAdapter {
         });
 
         TextButton leaderboardButton = new TextButton("Leaderboard", skin);
+        leaderboardButton.setTransform(true);
+        leaderboardButton.setScale(1f,1.2f);
         leaderboardButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,6 +102,8 @@ public class MenuScreen extends ScreenAdapter {
         });
 
         TextButton settingsButton = new TextButton("Settings", skin);
+        settingsButton.setTransform(true);
+        settingsButton.setScale(1f,1.2f);
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,6 +112,8 @@ public class MenuScreen extends ScreenAdapter {
         });
 
         TextButton quitButton = new TextButton("Quit", skin);
+        quitButton.setTransform(true);
+        quitButton.setScale(1f,1.2f);
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -120,10 +128,10 @@ public class MenuScreen extends ScreenAdapter {
         TextureRegion menuBackgroundRegion = gameplayAtlas.findRegion(RegionNames.MENU_BACKGROUND);
         contentTable.setBackground(new TextureRegionDrawable(menuBackgroundRegion));
 
-        contentTable.add(playButton).padBottom(10).expandX().fill().row();
-        contentTable.add(leaderboardButton).padBottom(10).fillX().row();
-        contentTable.add(settingsButton).padBottom(10).fillX().row();
-        contentTable.add(quitButton).fillX();
+        contentTable.add(playButton).padBottom(20).expandX().fill().row();
+        contentTable.add(leaderboardButton).padBottom(20).fill().row();
+        contentTable.add(settingsButton).padBottom(20).fill().row();
+        contentTable.add(quitButton).fill();
         contentTable.center();
 
 

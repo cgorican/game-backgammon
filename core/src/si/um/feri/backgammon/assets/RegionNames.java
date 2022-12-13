@@ -9,12 +9,14 @@ public class RegionNames {
     public static final String BAR = "bar";
     public static final String SPIKE_BRIGHT = "spike-bright";
     public static final String SPIKE_DARK = "spike-dark";
+    public static final String SPIKE_INTRO_BRIGHT = "spike-bright-intro";
+    public static final String SPIKE_INTRO_DARK = "spike-dark-intro";
     public static final String STORAGE = "storage";
 
     public static final String FIGURE_BRIGHT = "figure-bright";
     public static final String FIGURE_DARK = "figure-dark";
-    public static final String FIGURE_BRIGHT_SIDE = "figure-bright-side";
-    public static final String FIGURE_DARK_SIDE = "figure-dark-side";
+    public static final String FIGURE_SIDE_BRIGHT = "figure-bright-side";
+    public static final String FIGURE_SIDE_DARK = "figure-dark-side";
 
     public static final String DICE_1 = "dice-val-1";
     public static final String DICE_2 = "dice-val-2";

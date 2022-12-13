@@ -41,7 +41,7 @@ public class SettingsScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        viewport = new FitViewport(GameConfig.INTRO_WIDTH, GameConfig.INTRO_HEIGHT);
+        viewport = new FitViewport(GameConfig.WIDTH, GameConfig.HEIGHT);
         stage = new Stage(viewport, game.getBatch());
 
         skin = assetManager.get(AssetDescriptors.UI_SKIN);
