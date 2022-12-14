@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -24,8 +23,8 @@ import si.um.feri.backgammon.assets.RegionNames;
 import si.um.feri.backgammon.config.GameConfig;
 
 public class MenuScreen extends ScreenAdapter {
-    private final BackgammonGame game;
     private final AssetManager assetManager;
+    private final BackgammonGame game;
 
     private Viewport viewport;
     private Stage stage;

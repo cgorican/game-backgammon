@@ -8,10 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -22,7 +25,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import si.um.feri.backgammon.BackgammonGame;
 import si.um.feri.backgammon.assets.AssetDescriptors;
 import si.um.feri.backgammon.assets.RegionNames;
+import si.um.feri.backgammon.common.GameManager;
 import si.um.feri.backgammon.config.GameConfig;
+import si.um.feri.backgammon.enums.ColorEnum;
 
 public class SettingsScreen extends ScreenAdapter {
     private final BackgammonGame game;
@@ -83,30 +88,152 @@ public class SettingsScreen extends ScreenAdapter {
 
         // Inner table
         Table contentTable = new Table();
-        contentTable.defaults().padLeft(20).padRight(20);
+        contentTable.defaults().pad(10);
+        contentTable.setDebug(false);
 
         TextureRegion menuBackgroundRegion = gameplayAtlas.findRegion(RegionNames.MENU_BACKGROUND);
         contentTable.setBackground(new TextureRegionDrawable(menuBackgroundRegion));
 
         // Apply items to inner table
-        contentTable.add(new Label("Settings", skin))
-                .padBottom(40)
-                .align(Align.top)
+        Label settingsLabel = new Label("Settings", skin);
+        settingsLabel.setAlignment(Align.center);
+        contentTable.add(settingsLabel)
+                .align(Align.center)
+                .colspan(3)
+                .expandX()
+                .fillX()
+                .row();
+
+        Label spikeIndexLabel = new Label("Display field indexes", skin);
+        final CheckBox spikeIndexCheckBox = new CheckBox("Field indexes", skin);
+        spikeIndexCheckBox.setChecked(GameManager.INSTANCE.getFieldIndexesSwitch());
+        spikeIndexCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                CheckBox cb = (CheckBox) event.getListenerActor();
+                if (cb == spikeIndexCheckBox) {
+                    spikeIndexCheckBox.setChecked(cb.isChecked());
+                    GameManager.INSTANCE.setFieldIndexes(cb.isChecked());
+                }
+                Gdx.graphics.setContinuousRendering(spikeIndexCheckBox.isChecked());
+            }
+        });
+        contentTable.add(spikeIndexLabel)
+                .align(Align.left)
                 .colspan(2)
+                .expandX()
+                .fillX();
+        contentTable.add(spikeIndexCheckBox)
+                .align(Align.left)
+                .expandX()
+                .fillX()
+                .row();
+
+        final CheckBox cbBright = new CheckBox(ColorEnum.BRIGHT.name(), skin);
+        final CheckBox cbDark = new CheckBox(ColorEnum.DARK.name(), skin);
+        final ButtonGroup<CheckBox> cbInitMoveGroup = new ButtonGroup<>(cbBright, cbDark);
+        cbInitMoveGroup.setChecked(GameManager.INSTANCE.getInitMove().name());
+
+        ChangeListener listener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                CheckBox checked = cbInitMoveGroup.getChecked();
+                if (checked == cbBright) {
+                    GameManager.INSTANCE.setInitMove(ColorEnum.BRIGHT);
+                } else if (checked == cbDark) {
+                    GameManager.INSTANCE.setInitMove(ColorEnum.DARK);
+                }
+            }
+        };
+        cbBright.addListener(listener);
+        cbDark.addListener(listener);
+
+        contentTable.add(new Label("Initial move", skin))
+                .align(Align.left)
+                .expandX()
+                .fillX();
+        contentTable.add(cbBright)
+                .align(Align.left)
+                .expandX()
+                .fillX();
+        contentTable.add(cbDark)
+                .align(Align.left)
+                .expandX()
+                .fillX()
+                .row();
+
+        Label musicLabel = new Label("Music", skin);
+        final CheckBox musicCheckBox = new CheckBox("ON/OFF", skin);
+        musicCheckBox.setChecked(GameManager.INSTANCE.getMusicSwitch());
+        musicCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                CheckBox cb = (CheckBox) event.getListenerActor();
+                if (cb == musicCheckBox) {
+                    musicCheckBox.setChecked(cb.isChecked());
+                    GameManager.INSTANCE.setMusicSwitch(cb.isChecked());
+                    if(cb.isChecked() && !game.music.isPlaying()) {
+                        game.music.play();
+                    }
+                    else if(!cb.isChecked() && game.music.isPlaying()) {
+                        game.music.stop();
+                    }
+                }
+                Gdx.graphics.setContinuousRendering(musicCheckBox.isChecked());
+            }
+        });
+        contentTable.add(musicLabel)
+                .align(Align.left)
+                .colspan(2)
+                .expandX()
+                .fillX();
+        contentTable.add(musicCheckBox)
+                .align(Align.left)
+                .expandX()
+                .fillX()
+                .row();
+
+        Label sfxLabel = new Label("Sound effects", skin);
+        final CheckBox sfxCheckBox = new CheckBox("ON/OFF", skin);
+        sfxCheckBox.setChecked(GameManager.INSTANCE.getSoundEffectsSwitch());
+        sfxCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                CheckBox cb = (CheckBox) event.getListenerActor();
+                if (cb == sfxCheckBox) {
+                    sfxCheckBox.setChecked(cb.isChecked());
+                    GameManager.INSTANCE.setSoundEffectsSwitch(cb.isChecked());
+                }
+                Gdx.graphics.setContinuousRendering(sfxCheckBox.isChecked());
+            }
+        });
+        contentTable.add(sfxLabel)
+                .align(Align.left)
+                .colspan(2)
+                .expandX()
+                .fillX();
+        contentTable.add(sfxCheckBox)
+                .align(Align.left)
+                .expandX()
+                .fillX()
                 .row();
 
         // back btn
-        TextButton leaderboardButton = new TextButton("Back", skin);
-        leaderboardButton.addListener(new ClickListener() {
+        TextButton backBtn = new TextButton("Back", skin);
+        backBtn.setTransform(true);
+        backBtn.setScale(1f,1.2f);
+        backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MenuScreen(game));
             }
         });
-        contentTable.add(leaderboardButton)
+        contentTable.add(backBtn)
                 .padTop(20)
                 .padBottom(20)
-                .colspan(2)
+                .colspan(3)
+                .expandX()
+                .fillX()
                 .row();
 
         // Apply inner table to global table

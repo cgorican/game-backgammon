@@ -65,6 +65,8 @@ public class IntroScreen extends ScreenAdapter {
         duration += delta;
 
         if(duration > INTRO_DURATION) {
+            stage.addAction(Actions.moveBy(0,-viewport.getWorldHeight(),0.5f));
+            stage.clear();
             game.setScreen(new MenuScreen(game));
         }
 
