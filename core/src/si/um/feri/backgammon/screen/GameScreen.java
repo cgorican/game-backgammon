@@ -56,8 +56,7 @@ public class GameScreen extends ScreenAdapter {
 
     private ColorEnum move = GameManager.INSTANCE.getInitMove();
 
-    private TextButton rollBtnLeft;
-    private TextButton rollBtnRight;
+    private TextButton rollBtn;
     private TextButton rematchBtn;
 
     private Label winnerLabel;
@@ -85,7 +84,7 @@ public class GameScreen extends ScreenAdapter {
             addSpikeIndexes();
         }
         addFigures();
-        addRollBtns();
+        addRollBtn();
         addHUDBtns();
 
         Gdx.input.setInputProcessor(new InputMultiplexer(gameplayStage, hudStage));
@@ -153,14 +152,20 @@ public class GameScreen extends ScreenAdapter {
                 GameManager.INSTANCE.reset();
                 rematchBtn.addAction(Actions.fadeOut(.5f));
                 move = GameManager.INSTANCE.getInitMove();
-                if(move == ColorEnum.DARK) {
-                    rollBtnLeft.setVisible(false);
-                    rollBtnRight.addAction(Actions.fadeIn(.5f));
+                rollBtn.setVisible(true);
+                moveRollBtn();
+
+                gameplayStage.clear();
+                hudStage.clear();
+
+                // Add elements to stage
+                gameplayStage.addActor(createBoard());
+                if(GameManager.INSTANCE.switchFieldIndexes) {
+                    addSpikeIndexes();
                 }
-                else {
-                    rollBtnLeft.addAction(Actions.fadeIn(.5f));
-                    rollBtnRight.setVisible(false);
-                }
+                addFigures();
+                addRollBtn();
+                addHUDBtns();
             }
         });
         hudStage.addActor(exitBtn);
@@ -246,51 +251,25 @@ public class GameScreen extends ScreenAdapter {
         return (viewport.getWorldWidth() - storage.getRegionWidth() - 3*spike.getRegionWidth());
     }
 
-    private void addRollBtns() {
-        rollBtnLeft = new TextButton("Roll", skin);
-        rollBtnRight = new TextButton("Roll", skin);
+    private void addRollBtn() {
+        rollBtn = new TextButton("Roll", skin);
+        rollBtn.setTransform(true);
+        rollBtn.setWidth(100);
+        rollBtn.pad(10);
 
-        // width
-        rollBtnLeft.setWidth(100);
-        rollBtnRight.setWidth(100);
-        // padding
-        rollBtnLeft.pad(10);
-        rollBtnRight.pad(10);
+        // position (left | right) based on move
+        moveRollBtn();
 
-        // position
-        rollBtnLeft.setPosition(
-        getCenterLeft() - rollBtnLeft.getWidth()/2f,
-        hudViewport.getWorldHeight()/2f - rollBtnLeft.getHeight()/2f
-        );
-        rollBtnRight.setPosition(
-        getCenterRight() - rollBtnRight.getWidth()/2f,
-        hudViewport.getWorldHeight()/2f - rollBtnRight.getHeight()/2f
-        );
-        rollBtnLeft.setTransform(true);
-        rollBtnRight.setTransform(true);
-        if (move == ColorEnum.DARK) {
-            rollBtnLeft.setVisible(false);
-            rollBtnRight.addAction(Actions.fadeIn(0.5f));
-        } else {
-            rollBtnLeft.addAction(Actions.fadeIn(0.5f));
-            rollBtnRight.setVisible(false);
-        }
-
-        ClickListener cListener = new ClickListener() {
+        rollBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //rollBtn.addAction(Actions.fadeOut(.5f));
+                rollBtn.setVisible(false);
                 throwTheDices();
-                TextButton btn = (TextButton) event.getListenerActor();
-                btn.addAction(Actions.fadeOut(0.5f));
-                btn.setVisible(false);
             }
-        };
+        });
 
-        rollBtnLeft.addListener(cListener);
-        rollBtnRight.addListener(cListener);
-
-        gameplayStage.addActor(rollBtnLeft);
-        gameplayStage.addActor(rollBtnRight);
+        gameplayStage.addActor(rollBtn);
     }
 
     private void addSpikeIndexes() {
@@ -341,11 +320,11 @@ public class GameScreen extends ScreenAdapter {
                 final Figure tmpFigure;
                 if(GameManager.INSTANCE.boardState[i] < 0) {
                     tmpFigure = new Figure(figureDark, ColorEnum.DARK, i, k);
-                    log.debug("Figure index: "+i + " (dark)");
+                    //log.debug("Figure index: "+i + " (dark)");
                 }
                 else {
                     tmpFigure = new Figure(figureBright, ColorEnum.BRIGHT, i, k);
-                    log.debug("Figure index: "+i + " (bright)");
+                    //log.debug("Figure index: "+i + " (bright)");
                 }
                 tmpFigure.setOrigin(Align.center);
                 tmpFigure.setPosition(posX,posYY);
@@ -358,11 +337,18 @@ public class GameScreen extends ScreenAdapter {
                         // Final Figure clickedFigure = (Figure) event.getTarget();
                         final Figure clickedFigure = (Figure) event.getListenerActor();
                         ColorEnum figureColor = clickedFigure.getFigureColor();
-                        if(figureColor != move ) return;
+                        if(figureColor != move || !GameManager.DID_ROLL) return;
 
+                        /*
+                        log.debug(".............");
+                        for(Integer rv : GameManager.INSTANCE.rollValues) {
+                            log.debug(rv+"");
+                        }
+                        log.debug(".............");
+                         */
 
                         if(!GameManager.INSTANCE.rollValues.isEmpty()) {
-                            int moveValue = GameManager.INSTANCE.rollValues.lastElement();
+                            int moveValue = GameManager.INSTANCE.rollValues.first();
                             //log.debug("moveValue: "+moveValue);
                             moveValue *= (figureColor == ColorEnum.DARK) ? (-1): 1;
 
@@ -408,10 +394,11 @@ public class GameScreen extends ScreenAdapter {
                                     }
                                     clickedFigure.remove();
                                     // remove dice with same move Value and smallest posX
-                                    removeDice(GameManager.INSTANCE.rollValues.pop());
+                                    removeDice(GameManager.INSTANCE.rollValues.removeIndex(0));
 
                                     // check if the game has concluded
                                     if(isGameDone(figureColor)) {
+                                        removeDices();
                                         log.debug("Game has concluded");
                                         GameManager.GAME_STATE = GameStateEnum.DONE;
                                         winnerLabel = new Label(clickedFigure.getFigureColor().name() + " figures won.", skin);
@@ -425,14 +412,12 @@ public class GameScreen extends ScreenAdapter {
                                             //int oldWins = //GameManager.INSTANCE.leaderboard.get()
                                             //GameManager.INSTANCE.leaderboard.put(GameManager.USER_1)
                                         // display rematch button
+                                        rollBtn.setVisible(false);
                                         rematchBtn.setVisible(true);
                                         rematchBtn.addAction(Actions.fadeIn(0.5f));
                                     }
-
-                                    if(GameManager.INSTANCE.rollValues.isEmpty() || !canMakeMove()) {
+                                    else if(GameManager.INSTANCE.rollValues.isEmpty() || !canMakeMove()) {
                                         endMove();
-                                        rollBtnLeft.setVisible(false);
-                                        rollBtnRight.setVisible(false);
                                     }
                                     return;
                                 }
@@ -516,7 +501,7 @@ public class GameScreen extends ScreenAdapter {
                             clickedFigure.setStackIndex(stackIndexUpdate);
 
                             // remove dice with same move Value and smallest posX
-                            removeDice(GameManager.INSTANCE.rollValues.pop());
+                            removeDice(GameManager.INSTANCE.rollValues.removeIndex(0));
                         }
 
                         // check if any moves left
@@ -559,7 +544,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private boolean canStoreHigherValue(ColorEnum clickedColor, int fieldIndex, int absValue) {
-        log.debug("absValue: "+absValue+"\tfieldIndex: "+fieldIndex);
+        //log.debug("absValue: "+absValue+"\tfieldIndex: "+fieldIndex);
         if(clickedColor == ColorEnum.BRIGHT) {
             for(int i=GameManager.FIELD_COUNT-GameManager.COLUMNS/2; i<fieldIndex; i++) {
                 if(GameManager.INSTANCE.boardState[i] > 0) return true;
@@ -570,15 +555,11 @@ public class GameScreen extends ScreenAdapter {
                 if(GameManager.INSTANCE.boardState[i] < 0) return true;
             }
         }
-        log.debug("reach?: YEA");
         return false;
     }
 
     private void displayDices() {
-        for(int i=0; i<gameplayStage.getActors().size; i++) {
-            if(gameplayStage.getActors().items[i] instanceof Dice)
-                gameplayStage.getActors().items[i].remove();
-        }
+        removeDices();
 
         final TextureRegion spike = gameplayAtlas.findRegion(RegionNames.SPIKE_BRIGHT);
         final TextureRegion dice1 = gameplayAtlas.findRegion(RegionNames.DICE_1);
@@ -598,7 +579,7 @@ public class GameScreen extends ScreenAdapter {
             basePosX += xOffset;
         }
 
-        int i = GameManager.INSTANCE.rollValues.size()-1;
+        int i = 0;
         for(Integer rv : GameManager.INSTANCE.rollValues) {
             final Dice tmpDice;
             switch (rv) {
@@ -631,7 +612,7 @@ public class GameScreen extends ScreenAdapter {
             tmpDice.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if(!GameManager.DOUBLED && GameManager.INSTANCE.rollValues.size() == 2) {
+                    if(!GameManager.DOUBLED && GameManager.INSTANCE.rollValues.size == 2) {
                         for(int i=0; i<gameplayStage.getActors().size; i++) {
                             if(gameplayStage.getActors().items[i] instanceof Dice)
                                 gameplayStage.getActors().items[i].remove();
@@ -645,7 +626,7 @@ public class GameScreen extends ScreenAdapter {
                 }
             });
             gameplayStage.addActor(tmpDice);
-            i--;
+            i++;
         }
     }
 
@@ -654,11 +635,12 @@ public class GameScreen extends ScreenAdapter {
         boolean p1 = false;
         boolean p2 = false;
 
-        int size = GameManager.INSTANCE.rollValues.size();
-        //log.debug("rollValues.size(): "+size);
+        int size = GameManager.INSTANCE.rollValues.size;
+        //log.debug("rollValues.size: "+size);
 
         int move1 = GameManager.INSTANCE.rollValues.get(0);
-        int move2 = (size > 1) ? move2= GameManager.INSTANCE.rollValues.get(1) : 0;
+        int move2 = (size > 1 && !GameManager.DOUBLED)
+                ? GameManager.INSTANCE.rollValues.get(1) : 0;
 
         for (int i=0; i < gameplayStage.getActors().size; i++) {
             if(gameplayStage.getActors().items[i] instanceof Figure) {
@@ -700,7 +682,7 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        if(size > 1 && !p1 && p2) {
+        if(!p1 && p2) {
             int tmp = GameManager.INSTANCE.rollValues.get(0);
             GameManager.INSTANCE.rollValues.set(0,GameManager.INSTANCE.rollValues.get(1));
             GameManager.INSTANCE.rollValues.set(1, tmp);
@@ -714,11 +696,13 @@ public class GameScreen extends ScreenAdapter {
         if(GameManager.INSTANCE.switchSoundEffects) {
             diceSound.play();
         }
+        /*
         log.debug("Roll-------|");
-        for(int i=0; i<GameManager.INSTANCE.rollValues.size(); i++) {
+        for(int i=0; i<GameManager.INSTANCE.rollValues.size; i++) {
             log.debug(""+GameManager.INSTANCE.rollValues.get(i));
         }
         log.debug("---------");
+         */
         if(!canMakeMove()) {
             endMove();
         }
@@ -753,23 +737,31 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void endMove() {
+        removeDices();
+        if(move == ColorEnum.BRIGHT) {
+            move = ColorEnum.DARK;
+        }
+        else move = ColorEnum.BRIGHT;
+        moveRollBtn();
+        GameManager.DID_ROLL = false;
+    }
+
+    private void moveRollBtn() {
+        float posX = getCenterLeft() - rollBtn.getWidth()/2f;
+        final float posY = hudViewport.getWorldHeight()/2f - rollBtn.getHeight()/2f;
+        if(move == ColorEnum.DARK) {
+            posX = getCenterRight() - rollBtn.getWidth()/2f;
+        }
+        rollBtn.setPosition(posX, posY);
+        if(GameManager.GAME_STATE == GameStateEnum.RUNNING)
+            rollBtn.setVisible(true);
+        rollBtn.addAction(Actions.fadeIn(0.5f));
+    }
+
+    private void removeDices() {
         for(int i=0; i<gameplayStage.getActors().size; i++) {
             if(gameplayStage.getActors().items[i] instanceof Dice)
                 gameplayStage.getActors().items[i].remove();
-        }
-        if(move == ColorEnum.BRIGHT) {
-            move = ColorEnum.DARK;
-            rollBtnRight.setVisible(true);
-            rollBtnLeft.addAction(Actions.fadeOut(0.5f));
-            rollBtnRight.addAction(Actions.fadeIn(0.5f));
-            rollBtnLeft.setVisible(false);
-        }
-        else {
-            move = ColorEnum.BRIGHT;
-            rollBtnLeft.setVisible(true);
-            rollBtnLeft.addAction(Actions.fadeIn(0.5f));
-            rollBtnRight.addAction(Actions.fadeOut(0.5f));
-            rollBtnRight.setVisible(false);
         }
     }
 }

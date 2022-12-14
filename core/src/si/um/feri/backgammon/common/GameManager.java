@@ -3,9 +3,9 @@ package si.um.feri.backgammon.common;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
-import java.util.Stack;
 
 import si.um.feri.backgammon.BackgammonGame;
 import si.um.feri.backgammon.enums.ColorEnum;
@@ -23,6 +23,7 @@ public class GameManager {
     public static int FIGURES_HOME_BRIGHT = 0;
     public static int FIGURES_HOME_DARK = 0;
     public static boolean DOUBLED = false;
+    public static boolean DID_ROLL = false;
 
     // Preferences
     private static final String KEY_INIT_MOVE = "initMove";
@@ -38,7 +39,7 @@ public class GameManager {
 
     public HashMap<String, Integer> leaderboard = new HashMap<String, Integer>();
     public int[] boardState = new int[FIELD_COUNT];
-    public Stack<Integer> rollValues = new Stack<Integer>();
+    public Array<Integer> rollValues = new Array<Integer>();
 
     private GameManager() {
         PREFS = Gdx.app.getPreferences(BackgammonGame.class.getSimpleName());
@@ -108,28 +109,29 @@ public class GameManager {
         boardState[12] = -5;
         boardState[23] = -2;
 
-        /*
+/*
         // STORAGE TESTING
         boardState[5] = -5;
         boardState[3] = -5;
 
         boardState[20] = 5;
         boardState[18] = 5;
-        */
+*/
     }
 
     public void roll() {
         rollValues.clear();
         int dice1 = MathUtils.random(1,6);
         int dice2 = MathUtils.random(1,6);
-        rollValues.push(dice2);
-        rollValues.push(dice1);
+        rollValues.add(dice1);
+        rollValues.add(dice2);
         if(dice1 == dice2) {
             DOUBLED = true;
-            rollValues.push(dice1);
-            rollValues.push(dice1);
+            rollValues.add(dice1);
+            rollValues.add(dice1);
         }
         else DOUBLED = false;
+        DID_ROLL = true;
     }
 
     public void reset() {
@@ -139,6 +141,7 @@ public class GameManager {
         FIGURES_HOME_BRIGHT = 0;
         FIGURES_HOME_DARK = 0;
         DOUBLED = false;
+        DID_ROLL = false;
         GAME_STATE = GameStateEnum.RUNNING;
     }
 }
