@@ -30,6 +30,7 @@ import si.um.feri.backgammon.BackgammonGame;
 import si.um.feri.backgammon.assets.AssetDescriptors;
 import si.um.feri.backgammon.assets.RegionNames;
 import si.um.feri.backgammon.common.GameManager;
+import si.um.feri.backgammon.common.User;
 import si.um.feri.backgammon.config.GameConfig;
 
 public class LeaderboardScreen extends ScreenAdapter {
@@ -106,23 +107,31 @@ public class LeaderboardScreen extends ScreenAdapter {
         contentTable.add(new Label("Wins", skin))
                 .padBottom(5)
                 .row();
-        for (HashMap.Entry<String, Integer> x : GameManager.INSTANCE.leaderboard.entrySet()) {
-            contentTable.add(new Label(x.getKey(), skin));
-            Label scoreLabel = new Label(x.getValue() + "", skin);
+        for (User u : GameManager.LEADERBOARD.users) {
+            contentTable.add(new Label(u.username, skin));
+            Label scoreLabel = new Label(""+u.getWins(), skin);
             contentTable.add(scoreLabel)
-                    .padBottom(5)
-                    .row();
+                .padBottom(5)
+                .row();
         }
 
         // back btn
-        TextButton leaderboardButton = new TextButton("Back", skin);
-        leaderboardButton.addListener(new ClickListener() {
+        TextButton backBtn = new TextButton("Back", skin);
+        backBtn.setTransform(true);
+        backBtn.setScale(1f,1.2f);
+        backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MenuScreen(game));
             }
         });
-        contentTable.add(leaderboardButton).padTop(20).colspan(2).row();
+        contentTable.add(backBtn)
+                .padTop(20)
+                .padBottom(20)
+                .colspan(2)
+                .expandX()
+                .fillX()
+                .row();
 
         // Apply inner table to global table
         contentTable.center();

@@ -2,17 +2,26 @@ package si.um.feri.backgammon.common;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.Gson;
 
-import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import si.um.feri.backgammon.BackgammonGame;
 import si.um.feri.backgammon.enums.ColorEnum;
 import si.um.feri.backgammon.enums.GameStateEnum;
 
 public class GameManager {
-    private static final String[] nicknames = {"bob", "ckf", "crt", "lajgotm", "blitz", "wHzZ"};
+    public static Leaderboard LEADERBOARD;
 
     public static final GameManager INSTANCE = new GameManager();
     public static final int ROWS = 2;
@@ -37,9 +46,11 @@ public class GameManager {
     public boolean switchMusic;
     public boolean switchSoundEffects;
 
-    public HashMap<String, Integer> leaderboard = new HashMap<String, Integer>();
     public int[] boardState = new int[FIELD_COUNT];
     public Array<Integer> rollValues = new Array<Integer>();
+
+    private final Gson gson;
+    private final FileHandle file;
 
     private GameManager() {
         PREFS = Gdx.app.getPreferences(BackgammonGame.class.getSimpleName());
@@ -49,11 +60,31 @@ public class GameManager {
         switchMusic = PREFS.getBoolean(KEY_MUSIC, true);
         switchSoundEffects = PREFS.getBoolean(KEY_SOUND_EFFECTS, true);
 
-        // HARDCODED LEADERBOARD
-        for (int i = 0; i < MathUtils.random(3, nicknames.length); i++) {
-            leaderboard.put(nicknames[i], MathUtils.random(0,10));
-        }
+        gson = new Gson();
+        file = Gdx.files.local("backgammon_leaderboard.json");
+        if(file.exists()) readJsonFile();
+        else LEADERBOARD = new Leaderboard();
         resetBoard();
+    }
+
+    private void readJsonFile() {
+        if(file.exists()) {
+            String fileData = file.readString();
+            LEADERBOARD = gson.fromJson(fileData, Leaderboard.class);
+        }
+        else LEADERBOARD = new Leaderboard();
+    }
+
+    private void writeJsonFile() {
+        String jsonString = gson.toJson(LEADERBOARD);
+        file.writeString(jsonString, false);
+    }
+
+    public void addWin(ColorEnum c) {
+        if(c == ColorEnum.DARK) LEADERBOARD.users[0].addWin();
+        else LEADERBOARD.users[1].addWin();
+
+        writeJsonFile();
     }
 
     // get
@@ -116,7 +147,7 @@ public class GameManager {
 
         boardState[20] = 5;
         boardState[18] = 5;
-*/
+ */
     }
 
     public void roll() {

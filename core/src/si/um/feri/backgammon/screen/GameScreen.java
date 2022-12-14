@@ -409,8 +409,7 @@ public class GameScreen extends ScreenAdapter {
                                         );
                                         hudStage.addActor(winnerLabel);
                                         // update leaderboard
-                                            //int oldWins = //GameManager.INSTANCE.leaderboard.get()
-                                            //GameManager.INSTANCE.leaderboard.put(GameManager.USER_1)
+                                        GameManager.INSTANCE.addWin(move);
                                         // display rematch button
                                         rollBtn.setVisible(false);
                                         rematchBtn.setVisible(true);
