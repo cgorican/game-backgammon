@@ -394,7 +394,7 @@ public class GameScreen extends ScreenAdapter {
                                     }
                                     clickedFigure.remove();
                                     // remove dice with same move Value and smallest posX
-                                    removeDice(GameManager.INSTANCE.rollValues.removeIndex(0));
+                                    useDice(GameManager.INSTANCE.rollValues.removeIndex(0));
 
                                     // check if the game has concluded
                                     if(isGameDone(figureColor)) {
@@ -500,7 +500,7 @@ public class GameScreen extends ScreenAdapter {
                             clickedFigure.setStackIndex(stackIndexUpdate);
 
                             // remove dice with same move Value and smallest posX
-                            removeDice(GameManager.INSTANCE.rollValues.removeIndex(0));
+                            useDice(GameManager.INSTANCE.rollValues.removeIndex(0));
                         }
 
                         // check if any moves left
@@ -710,13 +710,14 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void removeDice(int diceValue) {
+    private void useDice(int diceValue) {
         boolean none = true;
         Dice lowestPosXDice = null;
         float lowestPosX = viewport.getWorldWidth();
         for(int i=0; i<gameplayStage.getActors().size; i++) {
             if(gameplayStage.getActors().items[i] instanceof Dice &&
-                ((Dice)gameplayStage.getActors().items[i]).getValue() == diceValue) {
+                ((Dice)gameplayStage.getActors().items[i]).getValue() == diceValue &&
+                !((Dice)gameplayStage.getActors().items[i]).getUsed()) {
                 if(none) {
                     lowestPosXDice = (Dice)gameplayStage.getActors().items[i];
                     lowestPosX = gameplayStage.getActors().items[i].getX();
@@ -731,7 +732,21 @@ public class GameScreen extends ScreenAdapter {
             }
         }
         if(lowestPosXDice != null) {
-            lowestPosXDice.remove();
+            //lowestPosXDice.remove();
+            lowestPosXDice.setOrigin(Align.center);
+            if(lowestPosX > viewport.getWorldWidth()/2f) {
+                lowestPosXDice.addAction(Actions.parallel(
+                        Actions.rotateBy(-90,.5f),
+                        Actions.alpha(.0f,.2f)
+                ));
+            }
+            else {
+                lowestPosXDice.addAction(Actions.parallel(
+                        Actions.rotateBy(90,.5f),
+                        Actions.alpha(.0f,.2f)
+                ));
+            }
+            lowestPosXDice.setUsed();
         }
     }
 
