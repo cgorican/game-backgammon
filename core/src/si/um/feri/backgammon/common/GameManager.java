@@ -45,6 +45,8 @@ public class GameManager {
     public boolean switchFieldIndexes;
     public boolean switchMusic;
     public boolean switchSoundEffects;
+    public String usernameDark = "player1";
+    public String usernameBright = "player2";
 
     public int[] boardState = new int[FIELD_COUNT];
     public Array<Integer> rollValues = new Array<Integer>();
@@ -70,7 +72,12 @@ public class GameManager {
     private void readJsonFile() {
         if(file.exists()) {
             String fileData = file.readString();
-            LEADERBOARD = gson.fromJson(fileData, Leaderboard.class);
+            try {
+                LEADERBOARD = gson.fromJson(fileData, Leaderboard.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LEADERBOARD = new Leaderboard();
+            }
         }
         else LEADERBOARD = new Leaderboard();
     }
@@ -81,9 +88,10 @@ public class GameManager {
     }
 
     public void addWin(ColorEnum c) {
-        if(c == ColorEnum.DARK) LEADERBOARD.users[0].addWin();
-        else LEADERBOARD.users[1].addWin();
-
+        if(c == ColorEnum.DARK) {
+            LEADERBOARD.addWin(usernameDark);
+        }
+        else LEADERBOARD.addWin(usernameDark);
         writeJsonFile();
     }
 
@@ -139,7 +147,6 @@ public class GameManager {
         boardState[7] = -3;
         boardState[12] = -5;
         boardState[23] = -2;
-
 /*
         // STORAGE TESTING
         boardState[5] = -5;

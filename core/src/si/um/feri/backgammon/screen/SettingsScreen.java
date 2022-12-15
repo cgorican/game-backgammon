@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -104,8 +105,35 @@ public class SettingsScreen extends ScreenAdapter {
                 .fillX()
                 .row();
 
-        Label spikeIndexLabel = new Label("Display field indexes", skin);
-        final CheckBox spikeIndexCheckBox = new CheckBox("Field indexes", skin);
+        // usernames
+        final TextField tfDark = new TextField("", skin);
+        final TextField tfBright = new TextField("", skin);
+        tfDark.setText(GameManager.INSTANCE.usernameDark);
+        tfBright.setText(GameManager.INSTANCE.usernameBright);
+
+        contentTable.add(new Label("Dark: ", skin))
+                .align(Align.left)
+                .expandX()
+                .fillX();
+        contentTable.add(tfDark)
+                .align(Align.left)
+                .colspan(2)
+                .expandX()
+                .fillX()
+                .row();
+        contentTable.add(new Label("Bright: ", skin))
+                .align(Align.left)
+                .expandX()
+                .fillX();
+        contentTable.add(tfBright)
+                .align(Align.left)
+                .colspan(2)
+                .expandX()
+                .fillX()
+                .row();
+
+        // field indexes
+        final CheckBox spikeIndexCheckBox = new CheckBox("Display field indexes", skin);
         spikeIndexCheckBox.setChecked(GameManager.INSTANCE.getFieldIndexesSwitch());
         spikeIndexCheckBox.addListener(new ChangeListener() {
             @Override
@@ -118,17 +146,15 @@ public class SettingsScreen extends ScreenAdapter {
                 Gdx.graphics.setContinuousRendering(spikeIndexCheckBox.isChecked());
             }
         });
-        contentTable.add(spikeIndexLabel)
-                .align(Align.left)
-                .colspan(2)
-                .expandX()
-                .fillX();
+        contentTable.add(new Label("",skin));
         contentTable.add(spikeIndexCheckBox)
                 .align(Align.left)
+                .colspan(2)
                 .expandX()
                 .fillX()
                 .row();
 
+        // initial move
         final CheckBox cbBright = new CheckBox(ColorEnum.BRIGHT.name(), skin);
         final CheckBox cbDark = new CheckBox(ColorEnum.DARK.name(), skin);
         final ButtonGroup<CheckBox> cbInitMoveGroup = new ButtonGroup<>(cbBright, cbDark);
@@ -148,7 +174,7 @@ public class SettingsScreen extends ScreenAdapter {
         cbBright.addListener(listener);
         cbDark.addListener(listener);
 
-        contentTable.add(new Label("Initial move", skin))
+        contentTable.add(new Label("Initial move:", skin))
                 .align(Align.left)
                 .expandX()
                 .fillX();
@@ -162,8 +188,7 @@ public class SettingsScreen extends ScreenAdapter {
                 .fillX()
                 .row();
 
-        Label musicLabel = new Label("Music", skin);
-        final CheckBox musicCheckBox = new CheckBox("ON/OFF", skin);
+        final CheckBox musicCheckBox = new CheckBox("Music", skin);
         musicCheckBox.setChecked(GameManager.INSTANCE.getMusicSwitch());
         musicCheckBox.addListener(new ChangeListener() {
             @Override
@@ -182,19 +207,8 @@ public class SettingsScreen extends ScreenAdapter {
                 Gdx.graphics.setContinuousRendering(musicCheckBox.isChecked());
             }
         });
-        contentTable.add(musicLabel)
-                .align(Align.left)
-                .colspan(2)
-                .expandX()
-                .fillX();
-        contentTable.add(musicCheckBox)
-                .align(Align.left)
-                .expandX()
-                .fillX()
-                .row();
 
-        Label sfxLabel = new Label("Sound effects", skin);
-        final CheckBox sfxCheckBox = new CheckBox("ON/OFF", skin);
+        final CheckBox sfxCheckBox = new CheckBox("SFX", skin);
         sfxCheckBox.setChecked(GameManager.INSTANCE.getSoundEffectsSwitch());
         sfxCheckBox.addListener(new ChangeListener() {
             @Override
@@ -207,9 +221,9 @@ public class SettingsScreen extends ScreenAdapter {
                 Gdx.graphics.setContinuousRendering(sfxCheckBox.isChecked());
             }
         });
-        contentTable.add(sfxLabel)
+        contentTable.add(new Label("Sound:", skin));
+        contentTable.add(musicCheckBox)
                 .align(Align.left)
-                .colspan(2)
                 .expandX()
                 .fillX();
         contentTable.add(sfxCheckBox)
@@ -225,6 +239,8 @@ public class SettingsScreen extends ScreenAdapter {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                GameManager.INSTANCE.usernameDark = tfDark.getText();
+                GameManager.INSTANCE.usernameBright = tfBright.getText();
                 game.setScreen(new MenuScreen(game));
             }
         });
