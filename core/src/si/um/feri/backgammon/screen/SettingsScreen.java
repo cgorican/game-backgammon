@@ -64,7 +64,7 @@ public class SettingsScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0.4f, 0.8f, 0.8f, 0);
+        ScreenUtils.clear(0.f, 0.f, 0.f, 0);
 
         stage.act(delta);
         stage.draw();

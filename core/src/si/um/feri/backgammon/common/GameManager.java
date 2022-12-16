@@ -91,7 +91,7 @@ public class GameManager {
         if(c == ColorEnum.DARK) {
             LEADERBOARD.addWin(usernameDark);
         }
-        else LEADERBOARD.addWin(usernameDark);
+        else LEADERBOARD.addWin(usernameBright);
         writeJsonFile();
     }
 
